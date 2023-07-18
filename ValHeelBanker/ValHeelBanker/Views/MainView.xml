@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+<view icon="4128" title="ValHeel Banking" width="550" height="300">
+		<control progid="DecalControls.Notebook" name="Notebook1">
+		<page label="Banking">
+			<control progid="DecalControls.FixedLayout" clipped="">
+				<control progid="DecalControls.StaticText" name="Label1" left="10" top="10" width="100" height="16" text="Account Number:"/>
+				<control progid="DecalControls.StaticText" name="lblAccountNumber" left="115" top="10" width="100" height="16" text="955515154548"/>
+				<control progid="DecalControls.StaticText" name="Label2" left="240" top="10" width="50" height="16" text="Pyreals:"/>
+				<control progid="DecalControls.StaticText" name="Label3" left="400" top="10" width="55" height="16" text="Luminance:"/>
+				<control progid="DecalControls.StaticText" name="Label4" left="400" top="31" width="55" height="16" text="AshCoin"/>
+				<control progid="DecalControls.StaticText" name="Label5" left="240" top="31" width="80" height="16" text="Pyreal Savings:"/>
+				<control progid="DecalControls.StaticText" name="lblPyreals" left="320" top="10" width="70" height="16" text="1 000 000 000"/>
+				<control progid="DecalControls.StaticText" name="lblPyrealSavings" left="320" top="31" width="70" height="16" text="1 000 000 000"/>
+				<control progid="DecalControls.StaticText" name="lblLuminance" left="465" top="10" width="70" height="16" text="1 000 000 000"/>
+				<control progid="DecalControls.StaticText" name="lblAshCoins" left="465" top="31" width="70" height="16" text="1 000 000 000"/>
+				<control progid="DecalControls.PushButton" name="cmdRequestBalances" left="400" top="55" width="130" height="20" text="Update Balances"/>
+				<control progid="DecalControls.Notebook" name="Notebook2" left="0" top="75" width="550" height="170">
+				<page label="Deposits">
+					<control progid="DecalControls.FixedLayout" clipped="">
+						<control progid="DecalControls.StaticText" name="Label6" left="10" top="10" width="80" height="16" text="Pyreals:"/>
+						<control progid="DecalControls.Edit" name="txtDepositPyreals" left="100" top="10" width="80" height="20" imageportalsrc="4726" text=""/>
+						<control progid="DecalControls.PushButton" name="cmdDepositMaxPyreals" left="280" top="10" width="80" height="20" text="Max Available"/>
+						<control progid="DecalControls.PushButton" name="cmdDepositPyreals" left="190" top="10" width="80" height="20" text="Deposit"/>
+						<control progid="DecalControls.Checkbox" name="chkDepositPyrealsPeriodically" left="370" top="12" width="130" height="16" text="Deposit Periodically"/>
+						<control progid="DecalControls.StaticText" name="Label7" left="8" top="46" width="80" height="16" text="Luminance:"/>
+						<control progid="DecalControls.Edit" name="txtDepositLuminance" left="100" top="46" width="80" height="20" imageportalsrc="4726" text=""/>
+						<control progid="DecalControls.PushButton" name="cmdDepositLuminance" left="190" top="46" width="80" height="20" text="Deposit"/>
+						<control progid="DecalControls.PushButton" name="cmdDepositMaxLuminance" left="280" top="46" width="80" height="20" text="Max Available"/>
+						<control progid="DecalControls.Checkbox" name="chkDepositLuminancePeriodically" left="370" top="48" width="130" height="16" text="Deposit Periodically"/>
+						<control progid="DecalControls.StaticText" name="Label71" left="8" top="86" width="80" height="16" text="AshCoin:"/>
+						<control progid="DecalControls.Edit" name="txtDepositAshCoin" left="100" top="86" width="80" height="20" imageportalsrc="4726" text=""/>
+						<control progid="DecalControls.PushButton" name="cmdDepositAshCoin" left="190" top="86" width="80" height="20" text="Deposit"/>
+						<control progid="DecalControls.PushButton" name="cmdDepositMaxAshCoin" left="280" top="86" width="80" height="20" text="Max Available"/>
+						<control progid="DecalControls.StaticText" name="Label711" left="8" top="126" width="80" height="16" text="Pyreal Savings:"/>
+						<control progid="DecalControls.Edit" name="txtDepositPyrealSavings" left="100" top="126" width="80" height="20" imageportalsrc="4726" text=""/>
+						<control progid="DecalControls.PushButton" name="cmdDepositPyrealSavings" left="190" top="126" width="80" height="20" text="Deposit"/>
+						<control progid="DecalControls.PushButton" name="cmdDepositMaxPyrealSavings" left="280" top="126" width="80" height="20" text="Max Available"/>
+					</control>
+
+				</page>
+				<page label="Withdraws">
+					<control progid="DecalControls.FixedLayout" clipped="">
+						<control progid="DecalControls.StaticText" name="Label26" left="10" top="10" width="80" height="16" text="Pyreals:"/>
+						<control progid="DecalControls.Edit" name="txtWithdrawPyreals" left="100" top="10" width="80" height="20" imageportalsrc="4726" text=""/>
+						<control progid="DecalControls.PushButton" name="cmdWithdrawMaxPyreals" left="280" top="10" width="80" height="20" text="Max Available"/>
+						<control progid="DecalControls.PushButton" name="cmdWithdrawPyreals" left="190" top="10" width="80" height="20" text="Withdraw"/>
+						<control progid="DecalControls.StaticText" name="Label27" left="8" top="46" width="80" height="16" text="Luminance:"/>
+						<control progid="DecalControls.Edit" name="txtWithdrawLuminance" left="100" top="46" width="80" height="20" imageportalsrc="4726" text=""/>
+						<control progid="DecalControls.PushButton" name="cmdWithdrawLuminance" left="190" top="46" width="80" height="20" text="Withdraw"/>
+						<control progid="DecalControls.PushButton" name="cmdWithdrawMaxLuminance" left="280" top="46" width="80" height="20" text="Max Available"/>
+						<control progid="DecalControls.StaticText" name="Label271" left="8" top="86" width="80" height="16" text="AshCoin:"/>
+						<control progid="DecalControls.Edit" name="txtWithdrawAshCoin" left="100" top="86" width="80" height="20" imageportalsrc="4726" text=""/>
+						<control progid="DecalControls.PushButton" name="cmdWithdrawAshCoin" left="190" top="86" width="80" height="20" text="Withdraw"/>
+						<control progid="DecalControls.PushButton" name="cmdWithdrawMaxAshCoin" left="280" top="86" width="80" height="20" text="Max Available"/>
+						<control progid="DecalControls.StaticText" name="Label2711" left="8" top="126" width="80" height="16" text="Pyreal Savings:"/>
+						<control progid="DecalControls.Edit" name="txtWithdrawPyrealSavings" left="100" top="126" width="80" height="20" imageportalsrc="4726" text=""/>
+						<control progid="DecalControls.PushButton" name="cmdWithdrawPyrealSavings" left="190" top="126" width="80" height="20" text="Withdraw"/>
+						<control progid="DecalControls.PushButton" name="cmdWithdrawMaxPyrealSavings" left="280" top="126" width="80" height="20" text="Max Available"/>
+					</control>
+
+				</page>
+				</control>
+
+			</control>
+
+		</page>
+		<page label="Transfers">
+			<control progid="DecalControls.FixedLayout" clipped="">
+				<control progid="DecalControls.Notebook" name="Notebook3" left="10" top="10" width="200" height="230">
+				<page label="Your Characters">
+					<control progid="DecalControls.FixedLayout" clipped="">
+						<control progid="DecalControls.List" name="lstCharacters" left="10" top="10" width="180" height="194">
+							<column progid="DecalControls.TextColumn" name="cName" fixedwidth="180"/>
+							<column progid="DecalControls.TextColumn" name="cAccountNumber"/>
+						</control>
+					</control>
+
+				</page>
+				<page label="Your Friends">
+					<control progid="DecalControls.FixedLayout" clipped="">
+						<control progid="DecalControls.List" name="lstFriends" left="10" top="10" width="180" height="142">
+							<column progid="DecalControls.TextColumn" name="cName" fixedwidth="120"/>
+							<column progid="DecalControls.TextColumn" name="cAccountNumber"/>
+							<column progid="DecalControls.IconColumn" name="cRemove" fixedwidth="20"/>
+						</control>
+						<control progid="DecalControls.Edit" name="txtFriend" left="60" top="160" width="80" height="20" imageportalsrc="4726" text=""/>
+						<control progid="DecalControls.PushButton" name="cmdAddFriend" left="150" top="185" width="40" height="20" text="Add"/>
+						<control progid="DecalControls.StaticText" name="Label11" left="10" top="160" width="50" height="20" text="Name:"/>
+						<control progid="DecalControls.StaticText" name="Label12" left="10" top="185" width="50" height="20" text="Acc #:"/>
+						<control progid="DecalControls.Edit" name="txtFriendAccountNumber" left="60" top="185" width="80" height="20" imageportalsrc="4726" text=""/>
+					</control>
+
+				</page>
+				</control>
+
+				<control progid="DecalControls.StaticText" name="Label8" left="230" top="24" width="100" height="20" text="Transfer to Player:"/>
+				<control progid="DecalControls.StaticText" name="lblTransferToPlayer" left="328" top="24" width="200" height="20" text=""/>
+				<control progid="DecalControls.StaticText" name="Label9" left="230" top="56" width="88" height="20" text="Currency:"/>
+				<control progid="DecalControls.Choice" name="cboTransferCurrency" left="328" top="56" width="120" height="19" selected="0">
+					<option text="Pyreals" data="Pyreals"/>
+					<option text="AshCoin" data="AshCoin"/>
+					<option text="Luminance" data="Luminance"/>
+				</control>
+				<control progid="DecalControls.StaticText" name="Label10" left="230" top="96" width="64" height="20" text="Amount:"/>
+				<control progid="DecalControls.Edit" name="txtTransferAmount" left="328" top="96" width="120" height="20" imageportalsrc="4726" text=""/>
+				<control progid="DecalControls.PushButton" name="cmdVerifyTransfer" left="280" top="168" width="80" height="24" text="Verify"/>
+				<control progid="DecalControls.PushButton" name="cmdTransfer" left="380" top="168" width="80" height="24" text="Transfer"/>
+				<control progid="DecalControls.StaticText" name="lblTransferStatus" left="240" top="208" width="290" height="20" justify="Center" text="Placeholder"/>
+				<control progid="DecalControls.StaticText" name="lblTransferStatusLine2" left="240" top="232" width="290" height="20" justify="Center" text="Placeholder"/>
+			</control>
+
+		</page>
+		<page label="Settings">
+			<control progid="DecalControls.FixedLayout" clipped="">
+				<control progid="DecalControls.StaticText" name="Label13" left="10" top="10" width="150" height="20" text="Pyreal Interval Settings"/>
+				<control progid="DecalControls.StaticText" name="Label14" left="30" top="40" width="100" height="20" text="Interval Minutes:"/>
+				<control progid="DecalControls.Edit" name="txtPyrealInterval" left="135" top="40" width="80" height="20" imageportalsrc="4726" text=""/>
+				<control progid="DecalControls.Choice" name="cboPyrealDepositType" left="220" top="40" width="100" height="19" selected="0">
+					<option text="Specified" data=""/>
+					<option text="Maximum" data=""/>
+					<option text="Difference" data=""/>
+				</control>
+				<control progid="DecalControls.Edit" name="txtPyrealDepositAmount" left="375" top="40" width="100" height="20" imageportalsrc="4726" text=""/>
+				<control progid="DecalControls.StaticText" name="Label15" left="340" top="40" width="30" height="20" text="Value:"/>
+				<control progid="DecalControls.StaticText" name="Label1311" left="10" top="145" width="150" height="20" text="Luminance Interval Settings"/>
+				<control progid="DecalControls.StaticText" name="Label1411" left="30" top="175" width="100" height="20" text="Interval Minutes:"/>
+				<control progid="DecalControls.Edit" name="txtLuminanceInterval" left="135" top="175" width="80" height="20" imageportalsrc="4726" text=""/>
+				<control progid="DecalControls.Choice" name="cboLuminanceDepositType" left="220" top="175" width="100" height="19" selected="0">
+					<option text="Specified" data=""/>
+					<option text="Maximum" data=""/>
+				</control>
+				<control progid="DecalControls.Edit" name="txtLuminanceDepositAmount" left="375" top="175" width="100" height="20" imageportalsrc="4726" text=""/>
+				<control progid="DecalControls.StaticText" name="Label1511" left="340" top="175" width="30" height="20" text="Value:"/>
+				<control progid="DecalControls.StaticText" name="Label16" left="30" top="72" width="500" height="16" text="Specified will deposit the entered amount or your current pyreals, whichever is the smallest."/>
+				<control progid="DecalControls.StaticText" name="Label17" left="30" top="93" width="500" height="16" text="Maximum will attempt to deposit all of your available pyreals."/>
+				<control progid="DecalControls.StaticText" name="Label18" left="30" top="114" width="500" height="16" text="Difference will deposit all of your available pyreals that cannot be bought with an MMD."/>
+				<control progid="DecalControls.StaticText" name="Label19" left="30" top="207" width="500" height="16" text="Specified will deposit the entered amount or your current luminance, whichever is the smallest."/>
+				<control progid="DecalControls.StaticText" name="Label20" left="30" top="228" width="500" height="16" text="Maximum will attempt to deposit all of your available luminance."/>
+				<control progid="DecalControls.PushButton" name="cmdSaveSettings" left="490" top="220" width="48" height="20" text="Save"/>
+			</control>
+
+		</page>
+		<page label="About">
+			<control progid="DecalControls.FixedLayout" clipped="">
+				<control progid="DecalControls.StaticText" name="Label21" left="10" top="10" width="530" height="16" text="Amounts can be entered with the following shortcuts: (case insensitive)"/>
+				<control progid="DecalControls.StaticText" name="Label22" left="20" top="31" width="500" height="16" text="B = Billion. e.g 1B = 1 000 000 000"/>
+				<control progid="DecalControls.StaticText" name="Label23" left="20" top="55" width="500" height="16" text="M = Million e.g 1M = 1 000 000"/>
+				<control progid="DecalControls.StaticText" name="Label24" left="20" top="81" width="500" height="16" text="K = Thousand e.g 25K = 25 000"/>
+				<control progid="DecalControls.StaticText" name="Label25" left="10" top="216" width="530" height="16" justify="Center" text="Developed by Baskill. Only for ValHeel private server."/>
+			</control>
+
+		</page>
+		</control>
+
+</view>
