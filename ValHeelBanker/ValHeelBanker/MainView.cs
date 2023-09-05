@@ -19,12 +19,17 @@ namespace ValHeelBanker
     private Settings _settings;
     private bool EatBankingText = false;
     private Transfer _transfer = new Transfer();
-
+    private SpendJob _spend  =new SpendJob();
+    private bool SpendJobInProgress = false;
+    private DateTime SpendJobTimeStamp;
+    private int SpendJobDelay = 1;
+    private DateTime LastBankCommandIssued = DateTime.Now.AddSeconds(-5);
     private Dictionary<int, CurrencyOptions> CurrencyMap= new Dictionary<int, CurrencyOptions>();
 
     private Timer _timer;
     private DateTime PyrealDepositTimeStamp;
     private DateTime LuminanceDepositTimeStamp;
+    public long BankedLuminance => _settings.Luminance;
 
     #endregion
 
@@ -32,14 +37,12 @@ namespace ValHeelBanker
 
     HudStaticText lblAccountNumber;
     HudStaticText lblPyreals;
-    HudStaticText lblPyrealSavings;
     HudStaticText lblLuminance;
     HudStaticText lblAshCoins;
 
     HudTextBox txtDepositPyreals;
     HudTextBox txtDepositLuminance;
     HudTextBox txtDepositAshCoin;
-    HudTextBox txtDepositPyrealSavings;
     
     HudButton cmdDepositPyreals;
     HudButton cmdDepositMaxPyreals;
@@ -47,8 +50,6 @@ namespace ValHeelBanker
     HudButton cmdDepositMaxLuminance;
     HudButton cmdDepositAshCoin;
     HudButton cmdDepositMaxAshCoin;
-    HudButton cmdDepositPyrealSavings;
-    HudButton cmdDepositMaxPyrealSavings;
 
     HudCheckBox chkDepositPyrealsPeriodically;
     HudCheckBox chkDepositLuminancePeriodically;
@@ -58,7 +59,6 @@ namespace ValHeelBanker
     HudTextBox txtWithdrawPyreals;
     HudTextBox txtWithdrawLuminance;
     HudTextBox txtWithdrawAshCoin;
-    HudTextBox txtWithdrawPyrealSavings;
 
     HudButton cmdWithdrawPyreals;
     HudButton cmdWithdrawMaxPyreals;
@@ -66,8 +66,6 @@ namespace ValHeelBanker
     HudButton cmdWithdrawMaxLuminance;
     HudButton cmdWithdrawAshCoin;
     HudButton cmdWithdrawMaxAshCoin;
-    HudButton cmdWithdrawPyrealSavings;
-    HudButton cmdWithdrawMaxPyrealSavings;
 
     HudList lstCharacters;
     HudList lstFriends;
@@ -93,6 +91,11 @@ namespace ValHeelBanker
 
     HudButton cmdSaveSettings;
 
+    HudTextBox txtSpendAmount;
+    HudCombo cboRatings;
+    HudStaticText lblSpendStatus;
+    HudButton cmdStartSpending;
+
     #endregion
 
     #region ... Constructor ...
@@ -101,9 +104,11 @@ namespace ValHeelBanker
     {
       _instance = instance;
       _settings = Settings.Load(Logger.BasePath);
+      _spend = new SpendJob(this);
 
       PyrealDepositTimeStamp = DateTime.Now;
       LuminanceDepositTimeStamp = DateTime.Now;
+      SpendJobTimeStamp= DateTime.Now;
 
       CurrencyMap.Add(0, CurrencyOptions.Pyreal);
       CurrencyMap.Add(1, CurrencyOptions.Ashcoin);
@@ -111,37 +116,30 @@ namespace ValHeelBanker
 
       lblAccountNumber = (HudStaticText)_instance.MainControls["lblAccountNumber"];
       lblPyreals = (HudStaticText)_instance.MainControls["lblPyreals"];
-      lblPyrealSavings = (HudStaticText)_instance.MainControls["lblPyrealSavings"];
       lblLuminance = (HudStaticText)_instance.MainControls["lblLuminance"];
       lblAshCoins = (HudStaticText)_instance.MainControls["lblAshCoins"];
       cmdRequestBalances = (HudButton)_instance.MainControls["cmdRequestBalances"];
       txtDepositPyreals = (HudTextBox)_instance.MainControls["txtDepositPyreals"];
       txtDepositLuminance = (HudTextBox)_instance.MainControls["txtDepositLuminance"];
       txtDepositAshCoin = (HudTextBox)_instance.MainControls["txtDepositAshCoin"];
-      txtDepositPyrealSavings = (HudTextBox)_instance.MainControls["txtDepositPyrealSavings"];
       cmdDepositPyreals = (HudButton)_instance.MainControls["cmdDepositPyreals"];
       cmdDepositMaxPyreals = (HudButton)_instance.MainControls["cmdDepositMaxPyreals"];
       cmdDepositLuminance = (HudButton)_instance.MainControls["cmdDepositLuminance"];
       cmdDepositMaxLuminance = (HudButton)_instance.MainControls["cmdDepositMaxLuminance"];
       cmdDepositAshCoin = (HudButton)_instance.MainControls["cmdDepositAshCoin"];
       cmdDepositMaxAshCoin = (HudButton)_instance.MainControls["cmdDepositMaxAshCoin"];
-      cmdDepositPyrealSavings = (HudButton)_instance.MainControls["cmdDepositPyrealSavings"];
-      cmdDepositMaxPyrealSavings = (HudButton)_instance.MainControls["cmdDepositMaxPyrealSavings"];
       chkDepositPyrealsPeriodically = (HudCheckBox)_instance.MainControls["chkDepositPyrealsPeriodically"];
       chkDepositLuminancePeriodically = (HudCheckBox)_instance.MainControls["chkDepositLuminancePeriodically"];
 
       txtWithdrawPyreals = (HudTextBox)_instance.MainControls["txtWithdrawPyreals"];
       txtWithdrawLuminance = (HudTextBox)_instance.MainControls["txtWithdrawLuminance"];
       txtWithdrawAshCoin = (HudTextBox)_instance.MainControls["txtWithdrawAshCoin"];
-      txtWithdrawPyrealSavings = (HudTextBox)_instance.MainControls["txtWithdrawPyrealSavings"];
       cmdWithdrawPyreals = (HudButton)_instance.MainControls["cmdWithdrawPyreals"];
       cmdWithdrawMaxPyreals = (HudButton)_instance.MainControls["cmdWithdrawMaxPyreals"];
       cmdWithdrawLuminance = (HudButton)_instance.MainControls["cmdWithdrawLuminance"];
       cmdWithdrawMaxLuminance = (HudButton)_instance.MainControls["cmdWithdrawMaxLuminance"];
       cmdWithdrawAshCoin = (HudButton)_instance.MainControls["cmdWithdrawAshCoin"];
       cmdWithdrawMaxAshCoin = (HudButton)_instance.MainControls["cmdWithdrawMaxAshCoin"];
-      cmdWithdrawPyrealSavings = (HudButton)_instance.MainControls["cmdWithdrawPyrealSavings"];
-      cmdWithdrawMaxPyrealSavings = (HudButton)_instance.MainControls["cmdWithdrawMaxPyrealSavings"];
 
       lstCharacters = (HudList)_instance.MainControls["lstCharacters"];
       lstFriends = (HudList)_instance.MainControls["lstFriends"];
@@ -167,6 +165,11 @@ namespace ValHeelBanker
 
       cmdSaveSettings = (HudButton)_instance.MainControls["cmdSaveSettings"];
 
+      txtSpendAmount = (HudTextBox)_instance.MainControls["txtSpendAmount"];
+      cboRatings = (HudCombo)_instance.MainControls["cboRatings"];
+      lblSpendStatus = (HudStaticText)_instance.MainControls["lblSpendStatus"];
+      cmdStartSpending = (HudButton)_instance.MainControls["cmdStartSpending"];
+
       cmdRequestBalances.Hit += CmdRequestBalances_Hit;
       cmdDepositPyreals.Hit += CmdDepositPyreals_Hit;
       cmdDepositMaxPyreals.Hit += CmdDepositMaxPyreals_Hit;
@@ -174,8 +177,6 @@ namespace ValHeelBanker
       cmdDepositMaxLuminance.Hit += CmdDepositMaxLuminance_Hit;
       cmdDepositAshCoin.Hit += CmdDepositAshCoin_Hit;
       cmdDepositMaxAshCoin.Hit += CmdDepositMaxAshCoin_Hit;
-      cmdDepositPyrealSavings.Hit += CmdDepositPyrealSavings_Hit;
-      cmdDepositMaxPyrealSavings.Hit += CmdDepositMaxPyrealSavings_Hit;
 
       cmdWithdrawPyreals.Hit += CmdWithdrawPyreals_Hit;
       cmdWithdrawMaxPyreals.Hit += CmdWithdrawMaxPyreals_Hit;
@@ -183,8 +184,6 @@ namespace ValHeelBanker
       cmdWithdrawMaxLuminance.Hit += CmdWithdrawMaxLuminance_Hit;
       cmdWithdrawAshCoin.Hit += CmdWithdrawAshCoin_Hit;
       cmdWithdrawMaxAshCoin.Hit += CmdWithdrawMaxAshCoin_Hit;
-      cmdWithdrawPyrealSavings.Hit += CmdWithdrawPyrealSavings_Hit;
-      cmdWithdrawMaxPyrealSavings.Hit += CmdWithdrawMaxPyrealSavings_Hit;
 
       chkDepositPyrealsPeriodically.Change += ChkDepositPyrealsPeriodically_Change;
       chkDepositLuminancePeriodically.Change += ChkDepositLuminancePeriodically_Change;
@@ -198,13 +197,15 @@ namespace ValHeelBanker
 
       cmdSaveSettings.Hit += CmdSaveSettings_Hit;
 
+      cmdStartSpending.Hit += CmdStartSpending_Hit;
+
       Logger.Core.ChatBoxMessage += Core_ChatBoxMessage;
 
       ClearTransferStatus();
 
       _timer = new Timer()
       {
-        Interval = 1000 * 5//1 min
+        Interval = 1000
       };
       _timer.Tick += _timer_Tick;
       _timer.Start();
@@ -214,7 +215,7 @@ namespace ValHeelBanker
 
     #region ... Destroy ...
 
-    ~MainView()
+    internal void Destroy()
     {
       _timer.Stop();
       _timer.Tick -= _timer_Tick;
@@ -229,8 +230,6 @@ namespace ValHeelBanker
       cmdDepositMaxLuminance.Hit -= CmdDepositMaxLuminance_Hit;
       cmdDepositAshCoin.Hit -= CmdDepositAshCoin_Hit;
       cmdDepositMaxAshCoin.Hit -= CmdDepositMaxAshCoin_Hit;
-      cmdDepositPyrealSavings.Hit -= CmdDepositPyrealSavings_Hit;
-      cmdDepositMaxPyrealSavings.Hit -= CmdDepositMaxPyrealSavings_Hit;
 
       cmdWithdrawPyreals.Hit -= CmdWithdrawPyreals_Hit;
       cmdWithdrawMaxPyreals.Hit -= CmdWithdrawMaxPyreals_Hit;
@@ -238,8 +237,6 @@ namespace ValHeelBanker
       cmdWithdrawMaxLuminance.Hit -= CmdWithdrawMaxLuminance_Hit;
       cmdWithdrawAshCoin.Hit -= CmdWithdrawAshCoin_Hit;
       cmdWithdrawMaxAshCoin.Hit -= CmdWithdrawMaxAshCoin_Hit;
-      cmdWithdrawPyrealSavings.Hit -= CmdWithdrawPyrealSavings_Hit;
-      cmdWithdrawMaxPyrealSavings.Hit -= CmdWithdrawMaxPyrealSavings_Hit;
 
       chkDepositPyrealsPeriodically.Change -= ChkDepositPyrealsPeriodically_Change;
       chkDepositLuminancePeriodically.Change -= ChkDepositLuminancePeriodically_Change;
@@ -254,37 +251,30 @@ namespace ValHeelBanker
 
       lblAccountNumber = null;
       lblPyreals = null;
-      lblPyrealSavings = null;
       lblLuminance = null;
       lblAshCoins = null;
       cmdRequestBalances = null;
       txtDepositPyreals = null;
       txtDepositLuminance = null;
       txtDepositAshCoin = null;
-      txtDepositPyrealSavings = null;
       cmdDepositPyreals = null;
       cmdDepositMaxPyreals = null;
       cmdDepositLuminance = null;
       cmdDepositMaxLuminance = null;
       cmdDepositAshCoin = null;
       cmdDepositMaxAshCoin = null;
-      cmdDepositPyrealSavings = null;
-      cmdDepositMaxPyrealSavings = null;
       chkDepositPyrealsPeriodically = null;
       chkDepositLuminancePeriodically = null;
 
       txtWithdrawPyreals = null;
       txtWithdrawLuminance = null;
       txtWithdrawAshCoin = null;
-      txtWithdrawPyrealSavings = null;
       cmdWithdrawPyreals = null;
       cmdWithdrawMaxPyreals = null;
       cmdWithdrawLuminance = null;
       cmdWithdrawMaxLuminance = null;
       cmdWithdrawAshCoin = null;
       cmdWithdrawMaxAshCoin = null;
-      cmdWithdrawPyrealSavings = null;
-      cmdWithdrawMaxPyrealSavings = null;
 
       lstCharacters = null;
       lstFriends = null;
@@ -319,6 +309,7 @@ namespace ValHeelBanker
       {
         EatBankingText = true;
         Logger.WriteToChat($"{BankCommands.DepositPyrealsCommand} {amount}");
+        LastBankCommandIssued = DateTime.Now;
         return true;
       }
       catch(Exception ex) { 
@@ -337,44 +328,7 @@ namespace ValHeelBanker
       {
         EatBankingText = true;
         Logger.WriteToChat($"{BankCommands.WithdrawPyrealsCommand} {amount}");
-        return true;
-      }
-      catch (Exception ex)
-      {
-        Logger.WriteDebugger(ex);
-        return false;
-      }
-    }
-
-    #endregion
-
-    #region ... TryDepositPyrealsInSavings ...
-
-    public bool TryDepositPyrealsInSavings(int amount)
-    {
-      try
-      {
-        EatBankingText= true;
-        Logger.WriteToChat($"{BankCommands.DepositPyrealsToSavingsCommand} {amount}");
-        return true;
-      }
-      catch (Exception ex)
-      {
-        Logger.WriteDebugger(ex);
-        return false;
-      }
-    }
-
-    #endregion
-
-    #region ... TryWithdrawPyrealsInSavings ...
-
-    public bool TryWithdrawPyrealsInSavings(int amount)
-    {
-      try
-      {
-        EatBankingText = true;
-        Logger.WriteToChat($"{BankCommands.WithdrawPyrealSavingsCommand} {amount}");
+        LastBankCommandIssued = DateTime.Now;
         return true;
       }
       catch (Exception ex)
@@ -394,6 +348,7 @@ namespace ValHeelBanker
       {
         EatBankingText = true;
         Logger.WriteToChat($"{BankCommands.DepositAshCoinCommand} {amount}");
+        LastBankCommandIssued = DateTime.Now;
         return true;
       }
       catch (Exception ex)
@@ -413,6 +368,7 @@ namespace ValHeelBanker
       {
         EatBankingText = true;
         Logger.WriteToChat($"{BankCommands.WithdrawAshCoinCommand} {amount}");
+        LastBankCommandIssued = DateTime.Now;
         return true;
       }
       catch (Exception ex)
@@ -432,6 +388,7 @@ namespace ValHeelBanker
       {
         EatBankingText = true;
         Logger.WriteToChat($"{BankCommands.DepositLuminanceCommand} {amount}");
+        LastBankCommandIssued = DateTime.Now;
         return true;
       }
       catch (Exception ex)
@@ -445,7 +402,7 @@ namespace ValHeelBanker
 
     #region ... TryWithdrawLuminance ...
 
-    public bool TryWithdrawLuminance(int amount)
+    public bool TryWithdrawLuminance(long amount)
     {
       try
       {
@@ -455,13 +412,15 @@ namespace ValHeelBanker
           return false;
         }
         //always ensure we never go over our max luminance amount
-        int difference = (int)(_instance.LuminanceMaximum - _instance.LuminanceCurrent);
+        var max = _instance.LuminanceMaximum > PluginCore.ServerMaxLuminance ? PluginCore.ServerMaxLuminance : _instance.LuminanceMaximum;
+        long difference = (max - _instance.LuminanceCurrent);
 
         if(amount > difference)
           amount=difference; 
 
         EatBankingText = true;
         Logger.WriteToChat($"{BankCommands.WithdrawLuminanceCommand} {amount}");
+        LastBankCommandIssued = DateTime.Now;
         return true;
       }
       catch (Exception ex)
@@ -537,7 +496,6 @@ namespace ValHeelBanker
         {
           lblAccountNumber.Text = "Not Available";
           lblPyreals.Text = "0";
-          lblPyrealSavings.Text = "0";
           lblLuminance.Text = "0";
           lblAshCoins.Text = "0";
           RequestAccountNumber();
@@ -563,7 +521,6 @@ namespace ValHeelBanker
       try
       {
         PopulateBalancePyreals();
-        PopulateBalancePyrealSavings();
         PopulateBalanceLuminance();
         PopulateBalanceAshCoin();
       }
@@ -576,22 +533,17 @@ namespace ValHeelBanker
 
     public void PopulateBalancePyreals()
     {
-      lblPyreals.Text = _settings.Pyreals.ToString("N0");
+      lblPyreals.Text = AmountUtils.FormattedNumber(_settings.Pyreals);
     }
 
     public void PopulateBalanceLuminance()
     {
-      lblLuminance.Text = _settings.Luminance.ToString("N0");
+      lblLuminance.Text = AmountUtils.FormattedNumber(_settings.Luminance);
     }
 
     public void PopulateBalanceAshCoin()
     {
-      lblAshCoins.Text = _settings.AshCoin.ToString("N0");
-    }
-
-    public void PopulateBalancePyrealSavings()
-    {
-      lblPyrealSavings.Text = _settings.PyrealSavings.ToString("N0");
+      lblAshCoins.Text = AmountUtils.FormattedNumber(_settings.AshCoin);
     }
 
     #endregion
@@ -603,6 +555,7 @@ namespace ValHeelBanker
       try
       {
         Logger.WriteToChat(BankCommands.BankAccount);
+        LastBankCommandIssued = DateTime.Now;
       }
       catch(Exception ex)
       {
@@ -638,7 +591,6 @@ namespace ValHeelBanker
         _settings.Pyreals = balance.Pyreals;
         _settings.Luminance = balance.Luminance;
         _settings.AshCoin = balance.AshCoin;
-        _settings.PyrealSavings = balance.PyrealSavings;
         Settings.Save(Logger.BasePath, _settings);
         PopulateBalances();
         //e.Eat = EatBankingText;
@@ -651,16 +603,6 @@ namespace ValHeelBanker
         _settings.Pyreals = balance.Pyreals;
         Settings.Save(Logger.BasePath, _settings);
         PopulateBalancePyreals();
-        //e.Eat = EatBankingText;
-        EatBankingText = false;
-        return;
-      }
-      if ((e.Text.StartsWith(BankCommands.DepositAttemptNewBalanceCallBack) || e.Text.StartsWith(BankCommands.TransferNewBalanceCallBack)) && e.Text.Contains("Pyreals in savings"))
-      {
-        var balance = BankCommands.GetAccountBalanceFromDepositOfPyrealsIntoSavings(e.Text);
-        _settings.PyrealSavings = balance.PyrealSavings;
-        Settings.Save(Logger.BasePath, _settings);
-        PopulateBalancePyrealSavings();
         //e.Eat = EatBankingText;
         EatBankingText = false;
         return;
@@ -705,56 +647,6 @@ namespace ValHeelBanker
     {
       _settings.DepositPyrealsPeriodically = chkDepositPyrealsPeriodically.Checked;
       Settings.Save(Logger.BasePath, _settings);
-    }
-
-    #endregion
-
-    #region ... CmdDepositMaxPyrealSavings_Hit ... 
-
-    private void CmdDepositMaxPyrealSavings_Hit(object sender, EventArgs e)
-    {
-      var amount = GetMaxPyrealsInInventory();
-      if (amount == 0 || !TryDepositPyrealsInSavings(amount))
-      {
-        Logger.WriteMessage("Unable to deposit requested amount. Transaction has been cancelled.");
-        return;
-      }
-    }
-
-    #endregion
-
-    #region ... CmdDepositPyrealSavings_Hit ...
-
-    private void CmdDepositPyrealSavings_Hit(object sender, EventArgs e)
-    {
-      try
-      {
-        int amount;
-        if (AmountUtils.TryParseAmount(txtDepositPyrealSavings.Text, out amount))
-        {
-          if (amount > 0)
-          {
-            int total;
-            if (!CheckPyrealBalanceInInventory(amount, out total))
-            {
-              Logger.WriteMessage($"Unable to deposit requested amount. You tried to deposit {amount.ToString("N0")} but you only have {total.ToString("N0")} available. Transaction has been cancelled.");
-              return;
-            }
-            if (!TryDepositPyrealsInSavings(amount))
-            {
-              Logger.WriteMessage("Unable to deposit requested amount. Transaction has been cancelled.");
-              return;
-            }
-          }
-          return;
-        }
-        Logger.WriteDebugger($"Failed to convert pyreal value to int. Value: {txtDepositPyrealSavings.Text}");
-        Logger.WriteMessage("Unable to deposit requested amount. Transaction has been cancelled.");
-      }
-      catch (Exception ex)
-      {
-        Logger.WriteDebugger(ex);
-      }
     }
 
     #endregion
@@ -938,41 +830,6 @@ namespace ValHeelBanker
 
     #endregion
 
-    #region ... CmdWithdrawPyrealSavings_Hit ...
-
-    private void CmdWithdrawPyrealSavings_Hit(object sender, EventArgs e)
-    {
-      try
-      {
-        int amount;
-        if (AmountUtils.TryParseAmount(txtWithdrawPyrealSavings.Text, out amount))
-        {
-          if (amount > 0)
-          {
-            if (amount > _settings.PyrealSavings)
-            {
-              Logger.WriteMessage($"Unable to withdraw requested amount. You tried to withdraw {amount.ToString("N0")} but you only have {_settings.PyrealSavings.ToString("N0")} available. Transaction has been cancelled.");
-              return;
-            }
-            if (!TryWithdrawPyrealsInSavings(amount))
-            {
-              Logger.WriteMessage("Unable to withdraw requested amount. Transaction has been cancelled.");
-              return;
-            }
-          }
-          return;
-        }
-        Logger.WriteDebugger($"Failed to convert pyreal value to int. Value: {txtWithdrawPyrealSavings.Text}");
-        Logger.WriteMessage("Unable to withdraw requested amount. Transaction has been cancelled.");
-      }
-      catch (Exception ex)
-      {
-        Logger.WriteDebugger(ex);
-      }
-    }
-
-    #endregion
-
     #region ... CmdWithdrawMaxAshCoin_Hit ...
 
     private void CmdWithdrawMaxAshCoin_Hit(object sender, EventArgs e)
@@ -1025,7 +882,7 @@ namespace ValHeelBanker
 
     private void CmdWithdrawMaxLuminance_Hit(object sender, EventArgs e)
     {
-      if (_settings.Luminance == 0 || !TryWithdrawLuminance((int)_settings.Luminance))
+      if (_settings.Luminance == 0 || !TryWithdrawLuminance(PluginCore.ServerMaxLuminance))
       {
         Logger.WriteMessage("Unable to withdraw requested amount. Transaction has been cancelled.");
         return;
@@ -1045,7 +902,7 @@ namespace ValHeelBanker
         {
           if (amount > 0)
           {
-            if (amount > (int)_settings.Luminance)
+            if (amount > _settings.Luminance)
             {
               Logger.WriteMessage($"Unable to withdraw requested amount. You tried to withdraw {amount.ToString("N0")} but you only have {_settings.Luminance.ToString("N0")} available. Transaction has been cancelled.");
               return;
@@ -1237,7 +1094,7 @@ namespace ValHeelBanker
       try
       {
         SetTransferDetails();
-        lblTransferStatus.Text = $"Transferring {_transfer.Amount} {_transfer.Currency.ToString().ToLower()} to ";
+        lblTransferStatus.Text = $"Transferring {_transfer.Amount} {_transfer.Currency.ToString().ToLower()}s to ";
         lblTransferStatusLine2.Text = $"{_transfer.Name} with Acc# {_transfer.AccountNumber}.";
       }
       catch(Exception ex)
@@ -1253,7 +1110,7 @@ namespace ValHeelBanker
     private void SetTransferDetails()
     {
       int amount;
-      if (!Int32.TryParse(txtTransferAmount.Text.Replace(",", "").Replace(" ", "").Trim(), out amount))
+      if (!AmountUtils.TryParseAmount(txtTransferAmount.Text.Replace(",", "").Replace(" ", "").Trim(), out amount))
         amount = 0;
       _transfer.Amount = amount;
       _transfer.Currency = (CurrencyOptions)cboTransferCurrency.Current;
@@ -1323,8 +1180,8 @@ namespace ValHeelBanker
       }
       if(_transfer.Amount > pool)
       {
-        lblTransferStatus.Text = $"You are trying to transfer {_transfer.Amount.ToString("N0")} {_transfer.Currency.ToString().ToLower()}";
-        lblTransferStatusLine2.Text = $"but you only have {pool.ToString("N0")} available.";
+        lblTransferStatus.Text = $"You are trying to transfer {AmountUtils.FormattedNumber(_transfer.Amount)} {_transfer.Currency.ToString().ToLower()}s";
+        lblTransferStatusLine2.Text = $"but you only have {AmountUtils.FormattedNumber(pool)} available.";
 
         return false;
       }
@@ -1462,6 +1319,68 @@ namespace ValHeelBanker
       try
       {
         _timer.Stop();
+        if(SpendJobInProgress)
+        {
+          if(DateTime.Now.Subtract(SpendJobTimeStamp).TotalSeconds >= SpendJobDelay)
+          {
+            var result = _spend.PerformNextStep();
+            if(result == null || !result.IsValid)
+            {
+              lblSpendStatus.Text = $"Operation failed. Error: {result?.ErrorMessage}";
+              SpendJobInProgress = false;
+              cmdStartSpending.Text = "Start";
+              _spend.ClearJob();
+              SpendJobDelay = 1;
+              return;
+            }
+            switch(result.Action)
+            {
+              case SpendActionTypes.Buy:
+                lblSpendStatus.Text = "Buying ratings.";
+                lblSpendStatus.Invalidate();
+                if(!TryBuyRatings(result.Command))
+                {
+                  lblSpendStatus.Text = $"Operation failed. Unable to purchase ratings.";
+                  SpendJobInProgress = false;
+                  cmdStartSpending.Text = "Start";
+                  _spend.ClearJob();
+                  SpendJobTimeStamp = DateTime.Now;
+                  SpendJobDelay = 1;
+                  return;
+                }
+                lblSpendStatus.Text = $"Spent {AmountUtils.FormattedNumber(result.Amount * PluginCore.RatingsIncreasePerPoint)} luminance to raise {_spend.SpendType} {result.Amount} times.";
+                _spend.UpdateSpentRatings((int)result.Amount);
+                break;
+              case SpendActionTypes.Withdraw:
+                if(DateTime.Now.Subtract(LastBankCommandIssued).TotalSeconds < 10)
+                {
+                  lblSpendStatus.Text = "Waiting to issue bank command.";
+                  return;
+                }
+                if(!TryWithdrawLuminance(result.Amount))
+                {
+                  lblSpendStatus.Text = $"Operation failed. Unable to withdraw {AmountUtils.FormattedNumber(result.Amount)} luminance from bank.";
+                  SpendJobInProgress = false;
+                  cmdStartSpending.Text = "Start";
+                  _spend.ClearJob();
+                  SpendJobTimeStamp = DateTime.Now;
+                  SpendJobDelay = 7;
+                  return;
+                }
+                lblSpendStatus.Text = $"Withdrawing {AmountUtils.FormattedNumber(result.Amount)} luminance from the bank.";
+                break;
+              case SpendActionTypes.Complete:
+                lblSpendStatus.Text = "Operation completed.";
+                SpendJobInProgress = false;
+                cmdStartSpending.Text = "Start";
+                _spend.ClearJob();
+                break;
+            }
+            SpendJobDelay = 1;
+            SpendJobTimeStamp = DateTime.Now;
+          }
+          return;
+        }
         if (_settings.DepositPyrealsPeriodically && DateTime.Now.Subtract(PyrealDepositTimeStamp).TotalMinutes >= _settings.PyrealsSaveInterval)
         {
           int maxP = GetMaxPyrealsInInventory();
@@ -1519,6 +1438,56 @@ namespace ValHeelBanker
       finally
       {
         _timer.Start();
+      }
+    }
+
+    #endregion
+
+    #region ... CmdStartSpending_Hit ...
+
+    private void CmdStartSpending_Hit(object sender, EventArgs e)
+    {
+      if(SpendJobInProgress)
+      {
+        SpendJobInProgress = false;
+        cmdStartSpending.Text = "Start";
+        lblSpendStatus.Text = string.Empty;
+        _spend.ClearJob();
+        return;
+      }
+      _spend.ClearJob();
+      _spend.SpendType = (SpendTypes)cboRatings.Current;
+      int amount;
+      if (!int.TryParse(txtSpendAmount.Text, out amount))
+        amount = 0;
+      _spend.Amount = amount;
+      lblSpendStatus.Text = $"Attempting to raise {_spend.SpendType} by {amount} points.";
+      var result = _spend.Validate();
+      if(!result.Item1)
+      {
+        lblSpendStatus.Text = $"Operation failed. {result.Item2}.";
+        _spend.ClearJob();
+        return;
+      }
+      cmdStartSpending.Text = "Cancel";
+      SpendJobInProgress = true;
+    }
+
+    #endregion
+
+    #region ... TryBuyRatings ...
+
+    public bool TryBuyRatings(string command)
+    {
+      try
+      {
+        Logger.WriteToChat(command);
+        return true;
+      }
+      catch (Exception ex)
+      {
+        Logger.WriteDebugger(ex);
+        return false;
       }
     }
 

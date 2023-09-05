@@ -14,15 +14,19 @@ namespace ValHeelBanker
     #region ... Private Properties ...
 
     private const string ValHeelServerName = "ValHeel";
+    public static PluginCore Instance { get; private set; }
     public bool IsEnabled { get; set; }
     private MainView View;
     public bool TestDeposits { get; set; }
     public long LuminanceMaximum { get; set; }
     public long LuminanceCurrent { get; set; }
+    public static long RatingsIncreasePerPoint = 10000000;
+    public static long ServerMaxLuminance = 300000000;
 
     public Dictionary<string, string> Characters { get; set; }
 
     public event EventHandler OnLuminanceChanged;
+
 
     #endregion
 
@@ -44,11 +48,13 @@ namespace ValHeelBanker
 Logger.IsDebuggerMode = true;
 #endif
 
-      Core.CharacterFilter.LoginComplete += CharacterFilter_LoginComplete;
-      Core.EchoFilter.ServerDispatch += EchoFilter_ServerDispatch;
       LuminanceCurrent = 0;
       LuminanceMaximum = 0;
       Characters = new Dictionary<string, string>();
+
+      Core.CharacterFilter.LoginComplete += CharacterFilter_LoginComplete;
+      Core.EchoFilter.ServerDispatch += EchoFilter_ServerDispatch;
+      Instance = this;
     }
 
     #endregion

@@ -6,14 +6,12 @@
 				<control progid="DecalControls.StaticText" name="Label1" left="10" top="10" width="100" height="16" text="Account Number:"/>
 				<control progid="DecalControls.StaticText" name="lblAccountNumber" left="115" top="10" width="100" height="16" text="955515154548"/>
 				<control progid="DecalControls.StaticText" name="Label2" left="240" top="10" width="50" height="16" text="Pyreals:"/>
-				<control progid="DecalControls.StaticText" name="Label3" left="400" top="10" width="55" height="16" text="Luminance:"/>
-				<control progid="DecalControls.StaticText" name="Label4" left="400" top="31" width="55" height="16" text="AshCoin"/>
-				<control progid="DecalControls.StaticText" name="Label5" left="240" top="31" width="80" height="16" text="Pyreal Savings:"/>
-				<control progid="DecalControls.StaticText" name="lblPyreals" left="320" top="10" width="70" height="16" text="1 000 000 000"/>
-				<control progid="DecalControls.StaticText" name="lblPyrealSavings" left="320" top="31" width="70" height="16" text="1 000 000 000"/>
-				<control progid="DecalControls.StaticText" name="lblLuminance" left="465" top="10" width="70" height="16" text="1 000 000 000"/>
-				<control progid="DecalControls.StaticText" name="lblAshCoins" left="465" top="31" width="70" height="16" text="1 000 000 000"/>
-				<control progid="DecalControls.PushButton" name="cmdRequestBalances" left="400" top="55" width="130" height="20" text="Update Balances"/>
+				<control progid="DecalControls.StaticText" name="Label3" left="380" top="10" width="55" height="16" text="Luminance:"/>
+				<control progid="DecalControls.StaticText" name="Label4" left="380" top="31" width="55" height="16" text="AshCoin"/>
+				<control progid="DecalControls.StaticText" name="lblPyreals" left="290" top="10" width="80" height="16" text="1 000 000 000"/>
+				<control progid="DecalControls.StaticText" name="lblLuminance" left="440" top="10" width="100" height="16" text="1 000 000 000"/>
+				<control progid="DecalControls.StaticText" name="lblAshCoins" left="440" top="31" width="100" height="16" text="1 000 000 000"/>
+				<control progid="DecalControls.PushButton" name="cmdRequestBalances" left="390" top="55" width="130" height="20" text="Update Balances"/>
 				<control progid="DecalControls.Notebook" name="Notebook2" left="0" top="75" width="550" height="170">
 				<page label="Deposits">
 					<control progid="DecalControls.FixedLayout" clipped="">
@@ -31,10 +29,6 @@
 						<control progid="DecalControls.Edit" name="txtDepositAshCoin" left="100" top="86" width="80" height="20" imageportalsrc="4726" text=""/>
 						<control progid="DecalControls.PushButton" name="cmdDepositAshCoin" left="190" top="86" width="80" height="20" text="Deposit"/>
 						<control progid="DecalControls.PushButton" name="cmdDepositMaxAshCoin" left="280" top="86" width="80" height="20" text="Max Available"/>
-						<control progid="DecalControls.StaticText" name="Label711" left="8" top="126" width="80" height="16" text="Pyreal Savings:"/>
-						<control progid="DecalControls.Edit" name="txtDepositPyrealSavings" left="100" top="126" width="80" height="20" imageportalsrc="4726" text=""/>
-						<control progid="DecalControls.PushButton" name="cmdDepositPyrealSavings" left="190" top="126" width="80" height="20" text="Deposit"/>
-						<control progid="DecalControls.PushButton" name="cmdDepositMaxPyrealSavings" left="280" top="126" width="80" height="20" text="Max Available"/>
 					</control>
 
 				</page>
@@ -52,10 +46,27 @@
 						<control progid="DecalControls.Edit" name="txtWithdrawAshCoin" left="100" top="86" width="80" height="20" imageportalsrc="4726" text=""/>
 						<control progid="DecalControls.PushButton" name="cmdWithdrawAshCoin" left="190" top="86" width="80" height="20" text="Withdraw"/>
 						<control progid="DecalControls.PushButton" name="cmdWithdrawMaxAshCoin" left="280" top="86" width="80" height="20" text="Max Available"/>
-						<control progid="DecalControls.StaticText" name="Label2711" left="8" top="126" width="80" height="16" text="Pyreal Savings:"/>
-						<control progid="DecalControls.Edit" name="txtWithdrawPyrealSavings" left="100" top="126" width="80" height="20" imageportalsrc="4726" text=""/>
-						<control progid="DecalControls.PushButton" name="cmdWithdrawPyrealSavings" left="190" top="126" width="80" height="20" text="Withdraw"/>
-						<control progid="DecalControls.PushButton" name="cmdWithdrawMaxPyrealSavings" left="280" top="126" width="80" height="20" text="Max Available"/>
+					</control>
+
+				</page>
+				<page label="Spend">
+					<control progid="DecalControls.FixedLayout" clipped="">
+						<control progid="DecalControls.StaticText" name="Label5" left="10" top="10" width="520" height="16" text="Spend your banked luminance to increase your ratings"/>
+						<control progid="DecalControls.StaticText" name="Label28" left="10" top="30" width="520" height="16" text="Select the rating type you want to increase, enter the amount to increase by and then click Start."/>
+						<control progid="DecalControls.StaticText" name="Label29" left="10" top="50" width="520" height="16" text="The plugin will automatically withdraw from your bank account, with appropiate pauses, until you have bought"/>
+						<control progid="DecalControls.StaticText" name="Label30" left="10" top="70" width="520" height="16" text="all the ratings you have selected, or you run out of banked funds."/>
+						<control progid="DecalControls.StaticText" name="Label31" left="10" top="100" width="40" height="16" text="Rating:"/>
+						<control progid="DecalControls.Choice" name="cboRatings" left="56" top="100" width="170" height="19" selected="0">
+							<option text="Destruction (+DMG)" data=""/>
+							<option text="Invulnerability (-DMG)" data=""/>
+							<option text="Glory (+CRIT DMG)" data=""/>
+							<option text="Temperance (-CRIT DMG)" data=""/>
+							<option text="Vitality (+HP/STAM/M)" data=""/>
+						</control>
+						<control progid="DecalControls.StaticText" name="Label32" left="232" top="100" width="50" height="16" text="Amount:"/>
+						<control progid="DecalControls.Edit" name="txtSpendAmount" left="288" top="100" width="50" height="16" imageportalsrc="4726" text=""/>
+						<control progid="DecalControls.PushButton" name="cmdStartSpending" left="360" top="100" width="50" height="20" text="Start"/>
+						<control progid="DecalControls.StaticText" name="lblSpendStatus" left="10" top="130" width="520" height="16" text=""/>
 					</control>
 
 				</page>

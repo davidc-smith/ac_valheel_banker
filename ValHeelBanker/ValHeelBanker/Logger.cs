@@ -43,7 +43,16 @@ namespace ValHeelBanker
     {
       Host = host;
       Core = core;
-      BasePath = BasePath = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString().Substring(0, System.Reflection.Assembly.GetExecutingAssembly().Location.ToString().LastIndexOf("\\"));
+      var filePath = string.Empty;
+      try
+      {
+        filePath = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString().Substring(0, System.Reflection.Assembly.GetExecutingAssembly().Location.ToString().LastIndexOf("\\"));
+      }
+      catch
+      {
+        filePath = @"C:\Turbine\Decal Plugins\ValHeelBanker";
+      }
+      BasePath = filePath;
     }
 
     #endregion
